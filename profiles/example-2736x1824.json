@@ -1,0 +1,241 @@
+{
+  "name": "example-2736x1824",
+  "description": "Worked example calibration profile: TD Snap for Windows editor, full screen, on a 2736x1824 display. These are real, production-proven values FOR THAT EXACT SETUP. On any other machine, resolution, display scaling, or TD Snap version, re-derive every value with docs/calibration.md; do not trust these numbers.",
+  "meta": {
+    "screen": [2736, 1824],
+    "displayed_example": [2000, 1333],
+    "scale_factor": 1.368,
+    "note": "All coordinates in this file are ORIGINAL screen space (the helper captures screenshots at the display's native resolution). If you measure positions on a screenshot you are viewing scaled down, convert first: factor = original width / displayed width. Here 2736 / 2000 = 1.368, so a point measured at displayed (800, 600) is original (1094, 821). Getting this wrong makes every click land short toward the top-left. Record your own three values here during calibration."
+  },
+  "notes": {
+    "how_to_fill_this_in": "Every key below is a named UI position (or settle time) the compiler needs. Calibrate them one at a time with the locate-then-verify-with-a-discriminator method in docs/calibration.md, on a throwaway locally imported page set. Each point's own note names its discriminator: the unambiguous visible effect that proves you clicked the right thing.",
+    "points": "points.<name>.xy is [x, y] in original screen space; points.<name>.sleep_ms is how long the compiler waits after clicking it (editor drawers take a beat to rise; slow feedback reads as failure). Increase sleeps on a slow machine before touching coordinates.",
+    "grid": "grid.columns_x[N] lists the x-centers of the N columns and grid.rows_y[N] the y-centers of the N rows, measured with the edit panel COLLAPSED (cells shift when the panel is open). Add an entry for every grid size your specs use.",
+    "value_list": "The rows/columns picker shows a vertical list of numeric options; value_list.x is the shared x of the option rows and value_list.row_y maps each numeric value to its row's y. This example covers values 1-6 without scrolling.",
+    "style_size_options": "Click positions of entries in the Style > Size list, keyed by the fontSize multiplier your specs use ('3' = 300%). Inside the picker, toggle points.style_match_toggle OFF first to reveal the list; the compiler does this.",
+    "style_layout_options": "Click positions of entries in the Style > Layout list, keyed by spec layout names (see spec/spec-schema.json). Only layouts your specs actually apply need entries.",
+    "timings_ms": "Named settle times for steps that are not tied to a single point (e.g. after typing, between multi-select taps). Defaults exist in the compiler but a calibrated profile should carry its own.",
+    "max_batch_commands": "The helper silently drops batches over ~38 commands; the compiler chunks below this cap. Lower it if your helper build proves flakier; never raise it past 38.",
+    "informational_points": "Points named info_* are not used by the compiler but are worth calibrating for the surrounding workflow (entering/leaving edit mode, clearing the message bar). Keep or delete them freely."
+  },
+  "max_batch_commands": 38,
+  "grid": {
+    "columns_x": {
+      "4": [610, 1192, 1774, 2356],
+      "5": [552, 1017, 1483, 1949, 2414]
+    },
+    "rows_y": {
+      "3": [541, 980, 1418],
+      "4": [486, 815, 1144, 1473],
+      "5": [454, 717, 980, 1243, 1506]
+    }
+  },
+  "value_list": {
+    "x": 1148,
+    "row_y": {
+      "1": 1206,
+      "2": 1298,
+      "3": 1394,
+      "4": 1486,
+      "5": 1576,
+      "6": 1668
+    },
+    "note": "Numeric option rows in the rows/columns picker. Discriminator: after clicking a value, the picker closes and the row shows the new number."
+  },
+  "style_size_options": {
+    "3": [1148, 1548]
+  },
+  "style_layout_options": {
+    "symbol-left": [1000, 1666]
+  },
+  "timings_ms": {
+    "panel_normalize_ms": 1000,
+    "cell_select_ms": 800,
+    "multiselect_tap_ms": 250,
+    "selection_settle_ms": 400,
+    "panel_race_guard_ms": 800,
+    "style_tab_multiselect_ms": 1400,
+    "label_type_settle_ms": 600,
+    "link_type_settle_ms": 400,
+    "link_search_settle_ms": 1500,
+    "picker_option_ms": 1100,
+    "multiselect_off_ms": 600
+  },
+  "points": {
+    "panel_collapse": {
+      "xy": [68, 1021],
+      "sleep_ms": 500,
+      "note": "Chevron that collapses the edit panel. Discriminator: the panel slides away and the full grid becomes visible/clickable."
+    },
+    "button_tab_collapsed": {
+      "xy": [1042, 1678],
+      "sleep_ms": 900,
+      "note": "Button tab position when the panel is COLLAPSED. Doubles as the session normalizer: if the panel is already open this click lands harmlessly in panel content, so after one click the panel is known-open either way. The #1 failure source is getting the open/collapsed pair wrong; calibrate both states carefully."
+    },
+    "page_tab": {
+      "xy": [1171, 1021],
+      "sleep_ms": 1100,
+      "note": "Page tab with the panel OPEN. Discriminator: the page-level menu (Grid Size etc.) replaces the button menu."
+    },
+    "page_grid_size": {
+      "xy": [253, 1193],
+      "sleep_ms": 900,
+      "note": "Grid Size entry in the Page tab's left menu. Discriminator: the Grid Size drawer opens showing the Match Page Set toggle."
+    },
+    "grid_match_toggle": {
+      "xy": [2549, 1193],
+      "sleep_ms": 900,
+      "note": "Match Page Set toggle inside Grid Size. The compiler clicks it FIRST, before any grid change: with Match ON, a grid change resizes the ENTIRE page set (law 3). Discriminator: the toggle flips and the per-page grid controls appear."
+    },
+    "grid_size_picker": {
+      "xy": [2576, 1314],
+      "sleep_ms": 1100,
+      "note": "Opens the grid size picker (the tile page with Rows/Columns). Discriminator: the picker page replaces the drawer content."
+    },
+    "grid_rows_arrow": {
+      "xy": [2576, 1682],
+      "sleep_ms": 1100,
+      "note": "Arrow on the Rows row of the picker. Discriminator: the numeric value list opens (see value_list)."
+    },
+    "grid_back": {
+      "xy": [571, 1117],
+      "sleep_ms": 900,
+      "note": "Back arrow returning from the value list to the Grid Size picker. Discriminator: the picker page is visible again with the new Rows value shown."
+    },
+    "grid_columns_scroll": {
+      "xy": [2626, 1700],
+      "sleep_ms": 800,
+      "note": "Scrollbar TRACK of the picker, clicked to page down and reveal the Columns row. Wheel scrolling moves these lists uselessly slowly; always click the track."
+    },
+    "grid_columns_arrow": {
+      "xy": [2576, 1669],
+      "sleep_ms": 1100,
+      "note": "Arrow on the Columns row AFTER the track click above. Discriminator: the numeric value list opens."
+    },
+    "button_content_tab": {
+      "xy": [253, 1112],
+      "sleep_ms": 800,
+      "note": "Content entry in the Button panel's left menu. Discriminator: the label/message fields and the action list appear."
+    },
+    "button_label_field": {
+      "xy": [1628, 1125],
+      "sleep_ms": 0,
+      "note": "The Label text field. No sleep: the compiler types immediately after focusing it, then waits label_type_settle_ms. Discriminator: a text cursor appears in the field."
+    },
+    "button_link_tab": {
+      "xy": [253, 1273],
+      "sleep_ms": 800,
+      "note": "Link to Page entry in the Button panel's left menu. Discriminator: the link options (new page / existing page) appear."
+    },
+    "link_existing": {
+      "xy": [1573, 1329],
+      "sleep_ms": 1400,
+      "note": "The 'link to existing page' option. Discriminator: the page search dialog opens."
+    },
+    "link_search_field": {
+      "xy": [1108, 513],
+      "sleep_ms": 0,
+      "note": "Search field of the existing-page dialog. The compiler focuses it, types the target title, waits link_search_settle_ms, then STOPS the batch: picking the right result row is an operator decision (identical names are told apart by thumbnail; punctuation can break substring search, so search a distinctive word)."
+    },
+    "link_create_confirm": {
+      "xy": [1573, 1349],
+      "sleep_ms": 0,
+      "note": "Create button of the existing-page dialog. The compiler never clicks this; it prints the position in the operator-stop note so the operator/agent clicks it after choosing the row."
+    },
+    "link_new": {
+      "xy": [1573, 1237],
+      "sleep_ms": 1200,
+      "note": "The 'link to new page' option. Discriminator: the new-page dialog opens with a name field focused."
+    },
+    "link_new_create": {
+      "xy": [1673, 1143],
+      "sleep_ms": 1600,
+      "note": "Create button of the new-page dialog. Discriminator: the dialog closes and the button now shows a link badge. The editor creates the shell page, born linked."
+    },
+    "button_style_tab": {
+      "xy": [253, 1192],
+      "sleep_ms": 800,
+      "note": "Style entry in the Button panel's left menu. Discriminator: the style rows (Background Color, Size, Layout) appear. With a multi-selection active this drawer is slower; the compiler waits style_tab_multiselect_ms instead."
+    },
+    "style_bg_color_arrow": {
+      "xy": [2576, 1192],
+      "sleep_ms": 900,
+      "note": "Arrow on the Background Color row. Discriminator: the color swatch grid opens."
+    },
+    "style_color_black": {
+      "xy": [764, 1525],
+      "sleep_ms": 1000,
+      "note": "The pure black swatch in the color grid. Used for rest cells. Discriminator: the selected cell turns solid black."
+    },
+    "multiselect_toggle": {
+      "xy": [2689, 700],
+      "sleep_ms": 800,
+      "note": "Multi-select icon. Discriminator: a selection-count badge appears (0 selected). The badge is also how checkpoints verify the selection count before styles are applied."
+    },
+    "style_scroll_track": {
+      "xy": [2626, 1644],
+      "sleep_ms": 900,
+      "note": "Scrollbar TRACK of the Style panel, clicked to page down so the Size and Layout rows are on screen."
+    },
+    "style_size_row": {
+      "xy": [2576, 1270],
+      "sleep_ms": 1300,
+      "note": "Arrow on the Size row (after the track click above). Discriminator: the size picker opens showing its Match toggle."
+    },
+    "style_match_toggle": {
+      "xy": [2549, 1248],
+      "sleep_ms": 1000,
+      "note": "Match Page Set toggle INSIDE the Size and Layout pickers (same position in both). Toggling it OFF reveals the option list. Distinct from grid_match_toggle."
+    },
+    "style_size_list_scroll": {
+      "xy": [2626, 1700],
+      "sleep_ms": 800,
+      "note": "Scrollbar TRACK of the size option list, clicked to page down to the sizes used by style_size_options."
+    },
+    "style_back": {
+      "xy": [612, 1118],
+      "sleep_ms": 900,
+      "note": "Back arrow returning from a picker to the Style root, used between the Size and Layout passes. Discriminator: the style rows are visible again."
+    },
+    "style_layout_row": {
+      "xy": [2576, 1511],
+      "sleep_ms": 1300,
+      "note": "Arrow on the Layout row. Discriminator: the layout picker opens showing its Match toggle."
+    },
+    "style_layout_list_scroll": {
+      "xy": [2626, 1700],
+      "sleep_ms": 800,
+      "note": "Scrollbar TRACK of the layout option list, clicked to page down to the layouts used by style_layout_options."
+    },
+    "content_speak_delete": {
+      "xy": [578, 1681],
+      "sleep_ms": 900,
+      "note": "Trash icon on the 'Speak or Insert Message' action row in the Content tab. Discriminator: a red confirm control appears on the row."
+    },
+    "delete_confirm": {
+      "xy": [2549, 1680],
+      "sleep_ms": 1000,
+      "note": "The red confirm for the action-row deletion. Discriminator: the speak action row disappears from the list."
+    },
+    "info_edit_mode_enter": {
+      "xy": [2681, 93],
+      "sleep_ms": 1200,
+      "note": "Informational (not used by the compiler): enters edit mode. Verify REAL edit mode by its banner and tab row, never by assuming (docs/method.md, fake edit mode)."
+    },
+    "info_edit_mode_done": {
+      "xy": [2625, 94],
+      "sleep_ms": 1200,
+      "note": "Informational: the Done button leaving edit mode."
+    },
+    "info_home_icon": {
+      "xy": [157, 95],
+      "sleep_ms": 800,
+      "note": "Informational: the home icon in user mode, for leaving the board on its home page after a session."
+    },
+    "info_message_bar_clear": {
+      "xy": [2225, 245],
+      "sleep_ms": 800,
+      "note": "Informational: clears the message bar in user mode, so a build session never leaves half-typed words on screen."
+    }
+  }
+}

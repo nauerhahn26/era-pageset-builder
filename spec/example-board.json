@@ -1,0 +1,38 @@
+{
+  "name": "demo-board",
+  "description": "Small invented two-page demo used by the tests and goldens: a Home page with a door to a Snacks page. All content is generic placeholder material, not any real user's board. It deliberately exercises every compiler phase: grid setup, button create+label, link-to-new (Home -> Snacks, compiled without --built), link-to-existing (Snacks -> Home, compiled with --built home), a rest cell on each page, style passes (fontSize + symbol-left groups and a fontSize-only group), a silent nav door, a speak-and-navigate door, and a silent label-only button.",
+  "pages": [
+    {
+      "id": "home",
+      "title": "Demo Home",
+      "grid": [4, 3],
+      "note": "Top page: quick words plus the door to Snacks. Sparse on purpose; the rest cell gives the eyes somewhere safe to land.",
+      "buttons": [
+        { "pos": [0, 0], "label": "yes", "kind": "speak", "sym": "🙂", "fontSize": 3.0, "layout": "symbol-left" },
+        { "pos": [3, 0], "label": "no", "kind": "speak", "sym": "🙅", "fontSize": 3.0, "layout": "symbol-left" },
+        { "pos": [1, 0], "label": "help", "kind": "speak", "sym": "🖐", "fontSize": 3.0, "layout": "symbol-left" },
+        { "pos": [2, 1], "kind": "rest", "note": "solid black, no action" },
+        { "pos": [0, 1], "label": "snacks", "kind": "nav", "navTo": "snacks", "sym": "🍎", "fontSize": 3.0, "layout": "symbol-left", "note": "silent door: no speakToo, so the silence phase strips its speak action" },
+        { "pos": [1, 1], "label": "just looking", "kind": "speak", "silent": true, "sym": "👀", "fontSize": 3.0, "note": "deliberate no-output choice; label only" },
+        { "pos": [0, 2], "label": "all done", "kind": "speak", "sym": "🏁", "fontSize": 3.0 },
+        { "pos": [1, 2], "label": "play", "kind": "speak", "sym": "🎈", "fontSize": 3.0, "layout": "symbol-left" }
+      ]
+    },
+    {
+      "id": "snacks",
+      "title": "Demo Snacks",
+      "grid": [4, 3],
+      "note": "Compile with --built home so the door back compiles as link-to-existing (an operator stop).",
+      "buttons": [
+        { "pos": [0, 0], "label": "apple", "kind": "speak", "sym": "🍎", "fontSize": 3.0, "layout": "symbol-left" },
+        { "pos": [1, 0], "label": "crackers", "kind": "speak", "sym": "🍘", "fontSize": 3.0 },
+        { "pos": [2, 0], "label": "water", "kind": "speak", "sym": "💧", "fontSize": 3.0, "layout": "symbol-left" },
+        { "pos": [3, 0], "label": "banana", "kind": "speak", "sym": "🍌", "fontSize": 3.0, "layout": "symbol-left" },
+        { "pos": [2, 1], "kind": "rest" },
+        { "pos": [0, 1], "label": "more please", "kind": "speak", "sym": "➕", "fontSize": 3.0 },
+        { "pos": [1, 1], "label": "all done", "kind": "speak", "sym": "🏁", "fontSize": 3.0 },
+        { "pos": [0, 2], "label": "go back", "kind": "nav", "navTo": "home", "speakToo": true, "sym": "🏠", "fontSize": 3.0, "note": "speak-and-navigate door: keeps its speak action" }
+      ]
+    }
+  ]
+}

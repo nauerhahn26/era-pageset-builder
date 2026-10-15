@@ -1,0 +1,17 @@
+name: release-qc-scan
+on: [push, pull_request]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: materialize denylists (empty if secrets unset — generic layer still enforces)
+        run: |
+          printf '%s' "${{ secrets.ERA_DENYLIST_BLOCK }}" > /tmp/block.txt
+          printf '%s' "${{ secrets.ERA_DENYLIST_WARN }}" > /tmp/warn.txt
+      - name: era-scan
+        run: |
+          chmod +x .github/era-scan.sh
+          ERA_DENYLIST_BLOCK=/tmp/block.txt ERA_DENYLIST_WARN=/tmp/warn.txt .github/era-scan.sh .
+      - name: syntax check
+        run: for f in $(git ls-files '*.py'); do python3 -m py_compile "$f"; done

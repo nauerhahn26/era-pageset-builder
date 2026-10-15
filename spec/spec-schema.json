@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/era-pageset-builder/spec-schema.json",
+  "title": "Board spec",
+  "description": "Declarative description of an AAC board: the pages to build and the buttons on each. tools/compile-page.py turns one page at a time into editor command batches; tools/qa-db.py verifies the built result against the same file. Grid positions are 0-based [column, row] from the top-left.",
+  "type": "object",
+  "required": ["pages"],
+  "additionalProperties": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Short name for this board."
+    },
+    "description": {
+      "type": "string",
+      "description": "Free-form notes about the board."
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/page" }
+    }
+  },
+  "$defs": {
+    "page": {
+      "type": "object",
+      "required": ["id", "title", "grid", "buttons"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier used by navTo links and --built lists. Never shown in the editor.",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The page title exactly as it should appear in the editor. Must be unique across the spec: links to existing pages are found BY TITLE in the editor's page search, and verification looks pages up by title. Avoid backslashes (the helper's TYPE command drops them) and prefer titles containing a distinctive searchable word (punctuation can break the editor's substring search)."
+        },
+        "grid": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "integer", "minimum": 1, "description": "columns" },
+            { "type": "integer", "minimum": 1, "description": "rows" }
+          ],
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "[columns, rows]. The calibration profile must have grid center entries for both values. Eye-gaze guidance: keep choices per page low; a sparser grid is a better board than a fuller one."
+        },
+        "note": {
+          "type": "string",
+          "description": "Free-form design note for this page."
+        },
+        "buttons": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/button" },
+          "description": "Buttons on this page. Cells not listed stay empty. No two buttons may share a position."
+        }
+      }
+    },
+    "button": {
+      "type": "object",
+      "required": ["pos"],
+      "additionalProperties": true,
+      "properties": {
+        "pos": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "integer", "minimum": 0, "description": "column, 0-based from the left" },
+            { "type": "integer", "minimum": 0, "description": "row, 0-based from the top" }
+          ],
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "[column, row], 0-based, top-left origin. Must be inside the page grid."
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["speak", "nav", "rest"],
+          "default": "speak",
+          "description": "speak = a plain speaking button (the editor auto-fills the message and picks a symbol from the label). nav = a door to another page (requires navTo; silent by default, see speakToo). rest = a deliberately blank, solid-black, action-free cell that gives an eye-gaze user somewhere safe to look; no label, no link."
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The button text, typed verbatim into the editor. Required for speak and nav; forbidden for rest. No backslashes or newlines (the helper's TYPE command cannot send them)."
+        },
+        "navTo": {
+          "type": "string",
+          "description": "Page id (not title) this button navigates to. Required when kind is nav. Whether the compiled batch links to a NEW page or an EXISTING one is decided at compile time by the --built list."
+        },
+        "speakToo": {
+          "type": "boolean",
+          "default": false,
+          "description": "Only meaningful on nav buttons: when true the button speaks its label AND navigates (its speak action is kept). When false/absent the compiler's silence phase removes the speak action, so navigating does not dump the label into the message bar."
+        },
+        "silent": {
+          "type": "boolean",
+          "default": false,
+          "description": "Only meaningful on speak buttons: when true the silence phase removes the speak action, leaving a label-only button (some boards want a deliberate no-output choice). Nav buttons use speakToo instead; rest cells are always silent."
+        },
+        "fontSize": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Font size MULTIPLIER as the editor's Size picker shows it: 3.0 means 300%. When present, the style phase applies it (the profile needs a matching style_size_options entry) and verification checks it in the database. Omit to inherit the page set default."
+        },
+        "layout": {
+          "type": "string",
+          "enum": ["label-top", "stacked", "label-left", "symbol-left", "text-only", "symbol-only"],
+          "description": "Symbol/label arrangement. When present, the style phase applies it (the profile needs a matching style_layout_options entry) and verification checks it. Omit to inherit the page set default -- and only specify a layout you actually apply, because verification distinguishes an explicit value from the inherited one. symbol-left (symbol left, text right) reads well for short labels at large fonts; longer labels usually keep the default."
+        },
+        "sym": {
+          "type": "string",
+          "description": "Emoji placeholder for previews and design review only. The compiler never types it and the editor picks its own symbol from the label; this field just lets spec reviews and mock renderers show intent."
+        },
+        "note": {
+          "type": "string",
+          "description": "Free-form design note for this button."
+        }
+      }
+    }
+  }
+}

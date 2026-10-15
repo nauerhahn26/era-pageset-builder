@@ -1,0 +1,20 @@
+# compile-page manifest -- page 'Demo Snacks' (id: snacks), profile 'example-2736x1824'
+# Run batches in order. Each 'before' line is an operator
+# checkpoint to satisfy BEFORE running that batch.
+00.txt: 22 commands
+before 01.txt: CHECKPOINT: screenshot and verify the grid is now 4 columns x 3 rows (and that Match Page Set is OFF). Then run the next batch.
+01.txt: 33 commands
+02.txt: 33 commands
+03.txt: 18 commands
+before 04.txt: OPERATOR STOP: a page-search list is open. Verify the results and click the row for 'Demo Home' (a blank thumbnail is a just-created shell page; a content thumbnail is a built or stock page), then click Create at 1573,1349. Then run the next batch.
+04.txt: 12 commands
+before 05.txt: CHECKPOINT: screenshot and verify every button has the right label and every rest cell is solid black. Then run the style batches.
+05.txt: 11 commands
+before 06.txt: CHECKPOINT: verify the multi-select badge shows exactly 3 selected (a stray earlier selection can silently join). Then run the next batch.
+06.txt: 27 commands
+07.txt: 13 commands
+before 08.txt: CHECKPOINT: verify the multi-select badge shows exactly 4 selected (a stray earlier selection can silently join). Then run the next batch.
+08.txt: 17 commands
+after the last batch: CHECKPOINT: screenshot and verify the styles (font sizes and layouts) landed on the right buttons. Then run the silence batches.
+after the page: exit edit mode with Done, then verify the page in the database (tools/qa-db.py) before moving on.
+total: 186 commands in 9 batches, ~72s scripted sleep
